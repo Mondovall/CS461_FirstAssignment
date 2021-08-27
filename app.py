@@ -28,9 +28,50 @@ class Deck:
         for i in self.cards:
             print(i.value, " of ", i.suit)
 
+    def shuffle_cards(self):
+        for i in range(len(self.cards) -1, 0, -1):
+            random_card = random.randint(0, i)
+            self.cards[i], self.cards[random_card] = self.cards[random_card], self.cards[i]
+
+
+    def deal_cards(self):
+        return self.cards.pop()
+
+
+
+
+class Player:
+
+    def __init__(self, name):
+        self.hand = []
+        self.name = name
+
+    def draw_cards(self, deck):
+        for i in range(0, 13):
+            self.hand.append(deck.deal_cards())
+        return self.hand
+
+    def show_hand(self):
+        for i in self.hand:
+            print(i.value, i.suit, "\n")
+
+
+class Points(Deck):
+    def __init__(self, player):
+        self.player = player
+
 
 deck = Deck()
-deck.print_deck()
+deck.shuffle_cards()
+player1 = Player("Player1")
+player1.draw_cards(deck)
+
+player1.show_hand()
+
+
+
+
+
 
 
 
