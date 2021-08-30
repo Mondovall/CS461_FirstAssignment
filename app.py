@@ -52,10 +52,26 @@ class Player:
         for i in self.hand:
             print(i.value, i.suit, "\n")
 
+class Partner():
+    def __init__(self):
+        self.hand = []
+
+    def simulator_hand(self, deck):
+        deck.shuffle_cards()
+        for i in range(0, 13):
+            self.hand.append(deck.cards[i])
+        return self.hand
+
+    def show_hand(self):
+        for i in self.hand:
+            print(i.suit, " ", i.value, "\n")
+
+
+
 
 class Points():
-    def __init__(self, player):
-        self.player = player
+    def __init__(self, hand):
+        self.hand = hand
         self.total= 0
 
     def high_cards(self, index):
@@ -77,7 +93,7 @@ class Points():
         diamonds = 0
         hearts = 0
 
-        for i in self.player.hand:
+        for i in self.hand:
             if i.suit == "Spades":
                 spades += 1
             elif i.suit == "Clubs":
@@ -117,10 +133,16 @@ deck.shuffle_cards()
 player1 = Player("Player1")
 player1.draw_cards(deck)
 player1.show_hand()
-points = Points(player1)
+points = Points(player1.hand)
 points.distribution()
-
+partner = Partner()
+partner_points = Points(partner.simulator_hand(deck))
+partner_points.distribution()
 print("points is: ", points.total)
+
+partner.show_hand()
+
+print("partner's points: ", partner_points.total)
 
 
 
