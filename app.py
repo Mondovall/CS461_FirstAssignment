@@ -56,21 +56,19 @@ class Player:
 class Points():
     def __init__(self, player):
         self.player = player
-        self.total_high_cards = 0
-        self.total_distribution = 0
-        self.total = self.total_distribution + self.total_high_cards
+        self.total= 0
 
-    def high_cards(self):
+    def high_cards(self, index):
 
-        for i in self.player.hand:
-            if i.value == "A":
-                self.total_high_cards += 4
-            elif i.value == "K":
-                self.total_high_cards += 3
-            elif i.value == "Q":
-                self.total_high_cards += 2
-            elif i.value == "J":
-                self.total_high_cards += 1
+
+        if index.value == "A":
+            self.total += 4
+        elif index.value == "K":
+            self.total += 3
+        elif index.value == "Q":
+            self.total += 2
+        elif index.value == "J":
+            self.total += 1
 
 
     def distribution(self):
@@ -88,29 +86,30 @@ class Points():
                 diamonds += 1
             elif i.suit == "Hearts":
                 hearts += 1
+            self.high_cards(i)
 
         # need to put in a function
         if spades == 0 or clubs == 0 or diamonds == 0 or hearts ==0:
-            self.total_distribution += 5
+            self.total += 5
 
         # need to put in a function
         if spades == 2:
-            self.total_distribution += 1
+            self.total += 1
         elif clubs == 2:
-            self.total_distribution += 1
+            self.total += 1
         elif diamonds == 2:
-            self.total_distribution += 1
+            self.total += 1
         elif hearts == 2:
-            self.total_distribution += 1
+            self.total += 1
         # need to put in a function
         if spades == 1:
-            self.total_distribution += 2
+            self.total += 2
         elif clubs == 1:
-            self.total_distribution += 2
+            self.total += 2
         elif diamonds == 1:
-            self.total_distribution += 2
+            self.total += 2
         elif hearts == 1:
-            self.total_distribution += 2
+            self.total += 2
 
 
 deck = Deck()
@@ -120,8 +119,8 @@ player1.draw_cards(deck)
 player1.show_hand()
 points = Points(player1)
 points.distribution()
-points.high_cards()
-print("points is: ", points.total_high_cards)
+
+print("points is: ", points.total)
 
 
 
