@@ -1,19 +1,26 @@
+# / Timothy D Hoang
+#   CS 461 - Program 1/ #
+
+
+
 import random
 
 
 class Card:
+    # / Card Object / #
     def __init__(self, value, suit):
         self.value = value
         self.suit = suit
 
 
 class Deck:
+    # / Deck Object Creation / #
     def __init__(self):
         self.cards = []
         self.make_deck()
 
     def make_deck(self):
-        for i in ["Spades", "Clubs", "Diamonds", "Hearts"]:
+        for i in ["S", "C", "D", "H"]:
             for j in range(1, 14):
                 if j == 1:
                     self.cards.append(Card("A", i))
@@ -26,39 +33,48 @@ class Deck:
                 else:
                     self.cards.append(Card(str(j), i))
 
+    # just to test deck values.
     def print_deck(self):
         for i in self.cards:
             print(i.value, " of ", i.suit)
-
+    # Shuffle method for the deck
     def shuffle_cards(self):
-        for i in range(len(self.cards) -1, 0, -1):
+        for i in range(len(self.cards) - 1, 0, -1):
             random_card = random.randint(0, i)
             self.cards[i], self.cards[random_card] = self.cards[random_card], self.cards[i]
 
+    # Deal card to players
     def deal_cards(self):
         return self.cards.pop()
 
 
 class Player:
 
+    # / Player's Construction / #
     def __init__(self, name):
         self.hand = []
         self.name = name
+        self.str = ""
 
+    # Draw card for player
     def draw_cards(self, deck):
         for i in range(0, 13):
             self.hand.append(deck.deal_cards())
         return self.hand
 
+    #Test player's hand
     def show_hand(self):
         for i in self.hand:
-            print(i.value, i.suit, "\n")
+            self.str += i.value + i.suit + " "
+        print(self.str)
 
 
-class Partner():
+class Partner:
+    # / Partner's Structure / #
     def __init__(self):
         self.hand = []
 
+    # Method to simulate partner's hand
     def simulator_hand(self, deck):
         deck.shuffle_cards()
         for i in range(0, 13):
@@ -69,12 +85,18 @@ class Partner():
         for i in self.hand:
             print(i.suit, " ", i.value, "\n")
 
+    # method to reset partner's hand for next simulation
+    def reset_hand(self):
+        self.hand = []
 
-class Points():
+
+class Points:
+    # / Structure to calculate points for both player and partner / #
     def __init__(self, hand):
         self.hand = hand
-        self.total= 0
+        self.total = 0
 
+    # Method to count high cards
     def high_cards(self, index):
 
         if index.value == "A":
@@ -86,6 +108,7 @@ class Points():
         elif index.value == "J":
             self.total += 1
 
+    # Distribution method for each points rule
     def distribution(self):
         spades = 0
         clubs = 0
@@ -93,21 +116,21 @@ class Points():
         hearts = 0
 
         for i in self.hand:
-            if i.suit == "Spades":
+            if i.suit == "S":
                 spades += 1
-            elif i.suit == "Clubs":
+            elif i.suit == "C":
                 clubs += 1
-            elif i.suit == "Diamonds":
+            elif i.suit == "D":
                 diamonds += 1
-            elif i.suit == "Hearts":
+            elif i.suit == "H":
                 hearts += 1
-            self.high_cards(i)
+            self.high_cards(i) # Call high card method to value each suit
 
-        # need to put in a function
-        if spades == 0 or clubs == 0 or diamonds == 0 or hearts ==0:
+        # void count
+        if spades == 0 or clubs == 0 or diamonds == 0 or hearts == 0:
             self.total += 5
 
-        # need to put in a function
+        # doubleton count
         if spades == 2:
             self.total += 1
         elif clubs == 2:
@@ -116,7 +139,7 @@ class Points():
             self.total += 1
         elif hearts == 2:
             self.total += 1
-        # need to put in a function
+        # singleton count
         if spades == 1:
             self.total += 2
         elif clubs == 1:
@@ -125,64 +148,68 @@ class Points():
             self.total += 2
         elif hearts == 1:
             self.total += 2
-# variable declarations
-thresh_hold = 500
-count = 0
-pass_points = 0
-part_points = 0
-game_points = 0
-small_points = 0
-grand_points = 0
-play_again = True
-player_input = "y"
-
-deck = Deck()
-deck.shuffle_cards()
-player1 = Player("Player1")
-player1.draw_cards(deck)
-player1.show_hand()
-points = Points(player1.hand)
-points.distribution()
-partner = Partner()
-while play_again:
-    while (count >= 0) and (count <= thresh_hold):
-        total = 0
-        partner_points = Points(partner.simulator_hand(deck))
-        partner_points.distribution()
-        count += 1
-        total = points.total + partner_points.total
-
-        if total < 20:
-            pass_points += 1
-        elif (total >= 20) and (total <= 25):
-            part_points += 1
-        elif (total <= 26) and (total <= 31):
-            game_points += 1
-        elif (total <= 32) and (total <= 35):
-            small_points += 1
-        elif total >= 36:
-            grand_points += 1
-    print("The estimated probability base on ", thresh_hold, "simulated hands")
-    print("Pass: ", (pass_points / thresh_hold) * 100)
-    print("Part score: ", (part_points / thresh_hold) * 100)
-    print("Game: ", (game_points / thresh_hold) * 100)
-    print("Small Slam: ", (small_points / thresh_hold) * 100)
-    print("Grand Slam: ", (grand_points / thresh_hold) * 100)
-    if count > thresh_hold:
-        # print("The estimated probability base on ", thresh_hold, " simulated hands")
-        # print("Pass: ", (pass_points / thresh_hold) * 100)
-        # print("Part score: ", (part_points / thresh_hold) * 100)
-        # print("Game: ", (game_points / thresh_hold) * 100)
-        # print("Small Slam: ", (small_points / thresh_hold) * 100)
-        # print("Grand Slam: ", (grand_points / thresh_hold) * 100)
-        player_input = input(str("Another hand[Y/N]? "))
-        if player_input.lower() == "y":
-            count = 0
-            play_again = True
-        elif player_input.lower() == "n":
-            exit(1)
-        else:
-            player_input = input(str("Not the right input [Y/N]? "))
 
 
+def main():
+    # / Main Block / #
+    while True:
+        thresh_hold = 1000                  # thresh hold for the simulation.
+        count = 0                           # keeping track of simulation
 
+        deck = Deck()                       # initialize a deck
+        deck.shuffle_cards()
+        player1 = Player("Player1")         #Initialize player
+        player1.draw_cards(deck)            # player got dealt cards
+        player1.show_hand()                 # Showing player's hand
+        player_points = Points(player1.hand)
+        player_points.distribution()
+        print("Here is your hand:")
+        print("This hand is worth", player_points.total, "points.")
+        print("Running simulation.....\n")
+        partner = Partner()                 # Initialize partner
+
+        # Variables to keep track of each point structure.
+        pass_points = 0
+        part_points = 0
+        game_points = 0
+        small_points = 0
+        grand_points = 0
+        while (count >= 0) and (count <= thresh_hold):
+            # Reset partner's hand each simulation then redistribute points.
+            partner.reset_hand()
+            partner_points = Points(partner.simulator_hand(deck))
+            partner_points.distribution()
+            count += 1
+            game_total = player_points.total + partner_points.total
+
+            if game_total < 20:
+                pass_points += 1
+            elif (game_total >= 20) and (game_total <= 25):
+                part_points += 1
+            elif (game_total >= 26) and (game_total <= 31):
+                game_points += 1
+            elif (game_total >= 32) and (game_total <= 35):
+                small_points += 1
+            elif game_total >= 36:
+                grand_points += 1
+
+        # Calculate and Display probabilities.
+        print("The estimated probability base on ", thresh_hold, "simulated hands")
+        print("Pass: ", "{:.1f}%".format((pass_points / thresh_hold) * 100))
+        print("Part score: ", "{:.1f}%".format((part_points / thresh_hold) * 100))
+        print("Game: ", "{:.1f}%".format((game_points / thresh_hold) * 100))
+        print("Small Slam: ", "{:.1f}%".format((small_points / thresh_hold) * 100))
+        print("Grand Slam: ", "{:.1f}%".format((grand_points / thresh_hold) * 100))
+        if count > thresh_hold:
+            player_input = input(str("\nAnother hand[Y/N]? "))
+            if player_input.lower() == "y":
+                TrueFin
+            elif player_input.lower() == "n":
+                exit(1)
+            else:
+                print("Input error, terminating simulation.")
+                exit(1)
+
+
+if __name__ == "__main__":
+    main()
