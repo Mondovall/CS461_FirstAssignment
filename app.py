@@ -203,7 +203,7 @@ def main():
         if count > thresh_hold:
             player_input = input(str("\nAnother hand[Y/N]? "))
             if player_input.lower() == "y":
-                TrueFin
+                True
             elif player_input.lower() == "n":
                 exit(1)
             else:
